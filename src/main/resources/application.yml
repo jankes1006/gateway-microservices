@@ -1,0 +1,21 @@
+server:
+  port: 8763
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+spring:
+  application:
+    name: microservices-gateway
+  main:
+    web-application-type: reactive
+keycloak-client:
+  server-url: http://localhost:8080
+  realm: microservices
+  id: microservicesClient
+  grant-type: password
+  scope: openid
+  admin-client-id: admin-cli
+  admin-client-secret: gxDGCziue2jGErPEhjUEMBfdX3Ogcggo
+  admin-client-grant-type: client_credentials
+  token-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/token
