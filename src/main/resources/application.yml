@@ -3,14 +3,10 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
-spring:
-  application:
-    name: microservices-gateway
-  main:
-    web-application-type: reactive
+      defaultZone: http://127.0.0.1:8761/eureka
 keycloak-client:
-  server-url: http://localhost:8080
+  server-url: http://127.0.0.1:8080
+  redirect-uri: http://127.0.0.1:8763/login/oauth2/code/keycloak
   realm: microservices
   id: microservicesClient
   grant-type: password
@@ -19,3 +15,58 @@ keycloak-client:
   admin-client-secret: gxDGCziue2jGErPEhjUEMBfdX3Ogcggo
   admin-client-grant-type: client_credentials
   token-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/token
+spring:
+  application:
+    name: microservices-gateway
+  main:
+    web-application-type: reactive
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: ${keycloak-client.id}
+            authorization-grant-type: authorization_code
+            redirect-uri: ${keycloak-client.redirect-uri}
+            scope: ${keycloak-client.scope}
+        provider:
+          keycloak:
+            authorization-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/auth
+            token-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/token
+            user-info-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/userinfo
+            jwk-set-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/certs
+            user-name-attribute: preferred_username
+            user-info-authentication-method: header
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/certs
+  cloud:
+    gateway:
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+              - HEAD
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: server_route
+          uri: lb://microservices-server
+          predicates:
+            - Path=/application/*
+          filters:
+            - RewritePath=/application(?<segment>/?.*), $\{segment}
+            - name: Redirect
+            - TokenRelay=
+            - RemoveRequestHeader=Cookie
