@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final List<String> ALLOWED_ORIGINS = List.of("http://localhost:8763");
+    private static final List<String> ALLOWED_ORIGINS = List.of("http://localhost:8763", "http://localhost:4200");
 
     private static final String ALLOWED_METHODS = "*";
     private static final String ALLOWED_HEADERS = "*";
