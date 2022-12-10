@@ -1,0 +1,17 @@
+keycloak-client:
+  server-url: https://lemur-18.cloud-iam.com
+  token-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/token
+  admin-client-secret: a67TUC9Hw2v3ObV0VhWbrLikNPNiGQYT
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            authorization-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/auth
+            token-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/token
+            user-info-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/userinfo
+            jwk-set-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/certs
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/certs
