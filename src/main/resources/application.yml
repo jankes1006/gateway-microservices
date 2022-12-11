@@ -5,18 +5,13 @@ eureka:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka
 keycloak-client:
-  server-url: https://lemur-18.cloud-iam.com
-  #server-url: https://lemur-18.cloud-iam.com
   redirect-uri: http://127.0.0.1:8763/login/oauth2/code/keycloak
   realm: microservices
   id: microservicesClient
   grant-type: password
   scope: openid
   admin-client-id: admin-cli
-  admin-client-secret: a67TUC9Hw2v3ObV0VhWbrLikNPNiGQYT
   admin-client-grant-type: client_credentials
-  token-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/token
-  #token-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/token
 spring:
   application:
     name: microservices-gateway
@@ -34,20 +29,8 @@ spring:
             scope: ${keycloak-client.scope}
         provider:
           keycloak:
-#            authorization-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/auth
-#            token-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/token
-#            user-info-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/userinfo
-#            jwk-set-uri: ${keycloak-client.server-u.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/auth
-            authorization-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/auth
-            token-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/token
-            user-info-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/userinfo
-            jwk-set-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/certs
             user-name-attribute: preferred_username
             user-info-authentication-method: header
-      resourceserver:
-        jwt:
-#          jwk-set-uri: ${keycloak-client.server-url}/realms/${keycloak-client.realm}/protocol/openid-connect/certs
-          jwk-set-uri: ${keycloak-client.server-url}/auth/realms/${keycloak-client.realm}/protocol/openid-connect/certs
   cloud:
     gateway:
       globalcors:
